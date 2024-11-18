@@ -17,7 +17,7 @@ python ./ml/*.py
 ```
 or 
 ```sh 
-python ./tl/*.py
+python ./nn/*.py
 ```   
 
 RCSP and OwAR implementation was done using [`matlab code`](https://github.com/drwuHUST/TLBCI)
