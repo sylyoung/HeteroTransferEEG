@@ -23,6 +23,7 @@ python ./nn/*.py
 RCSP and OwAR implementation was done using [`matlab code`](https://github.com/drwuHUST/TLBCI)
 
 #### Name Correspondence for Datasets used in the Paper
-Tangermann2012: BNCI2014001
-Steyrl2016: BNCI2014002
-Faller2012: BNCI2015001
+Tangermann2012: BNCI2014001 (MOABB)
+Steyrl2016: BNCI2014002 (MOABB)
+Faller2012: BNCI2015001 (MOABB)
+Dreyer2023: Dreyer2023 (Scientific Data paper)
