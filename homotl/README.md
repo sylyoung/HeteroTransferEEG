@@ -2,18 +2,14 @@
 
 ## Steps for Usage:
 
-#### 1. Install Dependencies
-
-Install Conda dependencies based on  `environment.yml` file.
-
-#### 2. Download Datasets
+#### 1. Download Datasets
 
 To download datasets, run   
 ```sh 
 python ./download_data.py
 ```   
 
-#### 3. Run Code
+#### 2. Run Code
 
 To test any of the algorithm, run from the main folder at this level, e.g.:
 ```sh 
