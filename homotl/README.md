@@ -24,7 +24,9 @@ or
 python ./tl/*.py
 ```   
 
-#### Names for Datasets in the Paper
+RCSP and OwAR implementation was done using [`matlab code`](https://github.com/drwuHUST/TLBCI)
+
+#### Name Correspondence for Datasets used in the Paper
 Tangermann2012: BNCI2014001
 Steyrl2016: BNCI2014002
 Faller2012: BNCI2015001
