@@ -22,7 +22,107 @@ import sys
 
 def train_target(args):
     X_src, y_src, X_tar, y_tar = read_mi_combine_tar(args)
-    print('X_src, y_src, X_tar, y_tar:', X_src.shape, y_src.shape, X_tar.shape, y_tar.shape)
+    # for Dreyer2023 dataset
+    # add this part to other files as well if want to try for this dataset
+    if args.data == 'Dreyer2023':
+        if args.gender:
+            gender_list = args.gender_list
+            gender = gender_list[args.idt]
+            if args.same:
+                inds = np.where(np.array(gender_list) == gender)[0]
+                print('remove before', len(inds), inds)
+                inds = inds[inds != args.idt]
+                print('remove after', len(inds), inds)
+            else:
+                inds = np.where(np.array(gender_list) != gender)[0]
+            print(gender, inds)
+
+            data = []
+            label = []
+            for i in range(len(inds)):
+                assert inds[i] != args.idt, print('inds error')
+                if inds[i] > args.idt:
+                    data.append(X_src[inds[i] - 1])
+                    label.append(y_src[inds[i] - 1])
+                else:
+                    data.append(X_src[inds[i]])
+                    label.append(y_src[inds[i]])
+
+            trials_arr = []
+            for i in range(args.N):
+                if i == args.idt:
+                    continue
+                if (gender_list[i] == gender and args.same) or (gender_list[i] != gender and not args.same):
+                    trials_arr.append(args.trials_arr[i])
+
+            print(trials_arr)
+            args.trials_arr = trials_arr
+
+            args.srcN = len(inds)
+
+            X_src = np.concatenate(data)
+            y_src = np.concatenate(label)
+        if args.age:
+            age_list = args.age_list
+            age = age_list[args.idt]
+            if args.same:
+                if age >= 1997:
+                    inds = np.where(np.array(age_list) >= 1997)[0]
+                elif age <= 1982:
+                    inds = np.where(np.array(age_list) <= 1982)[0]
+                else:
+                    print('age error')
+                    sys.exit(0)
+                print('remove before', len(inds), inds)
+                inds = inds[inds != args.idt]
+                print('remove after', len(inds), inds)
+            else:
+                if age >= 1997:
+                    inds = np.where(np.array(age_list) <= 1982)[0]
+                elif age <= 1982:
+                    inds = np.where(np.array(age_list) >= 1997)[0]
+                else:
+                    print('age error')
+                    sys.exit(0)
+
+            print(age, inds)
+
+            data = []
+            label = []
+            for i in range(len(inds)):
+                assert inds[i] != args.idt, print('inds error')
+                if inds[i] > args.idt:
+                    data.append(X_src[inds[i] - 1])
+                    label.append(y_src[inds[i] - 1])
+                else:
+                    data.append(X_src[inds[i]])
+                    label.append(y_src[inds[i]])
+
+            trials_arr = []
+            for i in range(args.N):
+                if i == args.idt:
+                    continue
+                if args.same:
+                    if age >= 1997 and args.age_list[i] >= 1997 and i != args.idt:
+                        trials_arr.append(args.trials_arr[i])
+                    elif age <= 1982 and args.age_list[i] <= 1982 and i != args.idt:
+                        trials_arr.append(args.trials_arr[i])
+                else:
+                    if age >= 1997 and args.age_list[i] <= 1982:
+                        trials_arr.append(args.trials_arr[i])
+                    elif age <= 1982 and args.age_list[i] >= 1997:
+                        trials_arr.append(args.trials_arr[i])
+
+            print(trials_arr)
+            args.trials_arr = trials_arr
+
+            args.srcN = len(inds)
+
+            X_src = np.concatenate(data)
+            y_src = np.concatenate(label)
+            print('X_src, y_src, X_tar, y_tar:', X_src.shape, y_src.shape, X_tar.shape, y_tar.shape)
+    else:
+        print('X_src, y_src, X_tar, y_tar:', X_src.shape, y_src.shape, X_tar.shape, y_tar.shape)
 
     dset_loaders = data_loader_sdaTL(X_src, y_src, X_tar, y_tar, args)
 
@@ -68,7 +168,7 @@ def train_target(args):
 
         source_classifier_loss = criterion(outputs_source, labels_source)
         tgttrain_classifier_loss = criterion(outputs_tgttrain, labels_tgttrain)
-        loss = (source_classifier_loss + tgttrain_classifier_loss) / 2
+        loss = (source_classifier_loss + tgttrain_classifier_loss * args.weight) / 2
 
         optimizer_f.zero_grad()
         optimizer_c.zero_grad()
@@ -134,25 +234,20 @@ if __name__ == '__main__':
 
         args.backbone = 'EEGNet'
 
-        args.gender_list = [1,1,2,1,1,2,2,1,2,2,2,2,2,1,2,2,1,1,1,2,1,2,1,1,1,1,2,1,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,2,2,2,2,1,1,1,1,1,2,2,2,2,1,2,2,2]
-
-        args.age_list = [1993,1993,1969,1982,1985,1970,1997,1992,1996,1997,1997,1993,1997,1994,1988,1996,1997,1995,1985,1996,1988,1989,1994,1985,1999,1998,1981,1995,1997,1996,1978,1969,1992,1993,1993,1990,1959,1973,1996,1999,1989,1994,1980,1988,1977,1993,1990,1997,1981,1997,1975,1997,1991,1989,1996,1998,1996,1996,1991,1968]
-
         # whether to use EA
         args.align = True
 
-
+        # For Dreyer2023 dataset
         # Default to cross group transfer, e.g., male to female
         # only set one property to True for gender/age
+        args.gender_list = [1,1,2,1,1,2,2,1,2,2,2,2,2,1,2,2,1,1,1,2,1,2,1,1,1,1,2,1,2,2,1,1,1,2,2,1,1,1,2,2,1,1,1,2,2,2,2,1,1,1,1,1,2,2,2,2,1,2,2,2]
+        args.age_list = [1993,1993,1969,1982,1985,1970,1997,1992,1996,1997,1997,1993,1997,1994,1988,1996,1997,1995,1985,1996,1988,1989,1994,1985,1999,1998,1981,1995,1997,1996,1978,1969,1992,1993,1993,1990,1959,1973,1996,1999,1989,1994,1980,1988,1977,1993,1990,1997,1981,1997,1975,1997,1991,1989,1996,1998,1996,1996,1991,1968]
         args.gender = False
         args.age = False
-
         assert (data_name == 'Dreyner2023' and (args.gender or args.age)) or not data_name == 'Dreyner2023', print('Please use cross gender/age transfer for Dreyer2023 dataset')
         assert (data_name == 'Dreyner2023' and not (args.gender and args.age)) or not data_name == 'Dreyner2023', print('Please set consider gender or age to True')
-
         # True for transfer from same groups, e.g., male to male
         args.same = False
-
         if args.gender:
             args.method += '-gender'
         if args.age:
@@ -199,6 +294,7 @@ if __name__ == '__main__':
 
             sub_acc_all = np.zeros(N)
             for idt in range(N):
+                # note here for Dreyer2023 dataset
                 if args.age is True:
                     if args.age_list[idt] > 1982 and args.age_list[idt] < 1997:
                         continue
