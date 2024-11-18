@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/10/16
+# @Time    : 2024/7/20
 # @Author  : Siyang Li
 # @File    : download_data.py
-# download from link and process EEG data
+# process Dreyer2023 EEG data
 # credit: code snippet originally written by Yunlu Tu
 import mne
 import os
