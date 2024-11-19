@@ -20,7 +20,7 @@ or
 python ./nn/*.py
 ```   
 
-RCSP and OwAR implementation was done using [`matlab code`](https://github.com/drwuHUST/TLBCI)
+RCSP and OwAR implementation used [`matlab code`](https://github.com/drwuHUST/TLBCI)
 
 #### Name Correspondence for Datasets used in the Paper
 Tangermann2012: BNCI2014001 (MOABB)  
