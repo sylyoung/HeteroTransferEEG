@@ -3,6 +3,8 @@
 # @Author  : Siyang Li
 # @File    : download_data.py
 # process Dreyer2023 EEG data
+# download data from link from original paper of Scientific Data by P. Dreyer
+# https://zenodo.org/records/8089820
 # credit: code snippet originally written by Yunlu Tu
 import mne
 import os
@@ -86,8 +88,7 @@ def preprocess_Dreyer2023(data_folder):
 
 if __name__ == '__main__':
 
-    # download data from link from original paper of Scientific Data by P. Dreyer
-    # https://zenodo.org/records/8089820
-    data_folder = './data/BCI Database'
+    # TODO: please replace path with your downloaded data file path https://zenodo.org/records/8089820
+    data_folder = 'path_to_replace/BCI Database'
 
     preprocess_Dreyer2023(data_folder)
