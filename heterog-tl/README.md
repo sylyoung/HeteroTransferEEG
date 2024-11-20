@@ -33,7 +33,7 @@ and For P300 datasets
 python ./pre_EA_align_p300.py
 ```   
 
-Note that the downloaded data and preprocessed data in step 1 uses ./data/ folder, while EA alignment and split data uses another dataset of your specification (see the two pre_EA files)
+Note that the downloaded data and preprocessed data in step 1 uses ./data/ path, while EA alignment and split data uses another path location of your specification (see the two pre_EA files)
 
 #### 3. Run Code
 
